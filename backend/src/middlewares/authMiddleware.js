@@ -8,7 +8,7 @@ const middlewareAutenticacion = (req, res, next) => {
 
         if (!token) {
             return res.status(403).json({ mensaje: 'Acceso denegado: Token no proporcionado' });
-        }
+        } qeqeqqew
 
         // Verificar el token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -19,13 +19,17 @@ const middlewareAutenticacion = (req, res, next) => {
         return res.status(401).json({ mensaje: 'Token inválido o expirado', error: error.message });
     }
 };
-const verificarRol = (rolesPermitidos) => (req, res, next) => {
-    if (!rolesPermitidos.includes(req.user.rol)) {
-        return res.status(403).json({ mensaje: 'No tienes permiso para acceder a este recurso' });
-    }
-    next();
+
+ficarRol = (rolesPermitidos) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({ mensaje: 'No autenticado' });
+        }
+        if (!rolesPermitidos.includes(req.user.rol)) {
+            return res.status(403).json({ mensaje: 'Acceso denegado: No tienes permisos suficientes' });
+        }
+        next();
+    };
 };
 
-
-
-module.exports = middlewareAutenticacion, verificarRol;
+module.exports = middlewareAutenticacion;
